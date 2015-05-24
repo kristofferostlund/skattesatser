@@ -8,7 +8,10 @@
   </head>
   <body>
     <header class="hero-search">
-      <input type="text" placeholder="Sök kommun">
+      <input type="text"
+      placeholder="Sök i tabellen"
+      oninput="OnInput(event)"
+      onpropertychange="OnPropChanged(event)">
     </header>
     <article>
       <table id="mainTable">

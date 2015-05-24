@@ -1,3 +1,35 @@
+function OnInput(event) {
+  filterTable(event.target.value);
+}
+
+function OnPropChanged(event) {
+  if (event.propertyName.toLowerCase () == "value") {
+    filterTable(event.srcElement.value);
+  }
+}
+
+function filterTable(query) {
+  var tbody = document.getElementById('mainTable').children[1];
+    
+  for (var i = 0; i < tbody.children.length; i++) {
+    var element = tbody.children[i];
+    if (!hasQuery(mapChildElements(element).join(' '), query)) {
+      element.style.display = 'none';
+    } else {
+      element.style.display = '';
+    }
+  }
+}
+
+function mapChildElements(element, mappedArr) {
+  if (mappedArr === undefined) { mappedArr = []; }
+  if (mappedArr.length === element.children.length) { return mappedArr; }
+  
+  mappedArr.push(element.children[mappedArr.length].innerHTML);
+  
+  return mapChildElements(element, mappedArr);
+}
+
 window.onload = function () {
   httpGet('/api/skattesatser', parseResponse);
 };
@@ -24,9 +56,7 @@ function drawObjects(data) {
     removeChildren(element);
   }
   createTh(data.shift(), table.children[0]);
-  data = data.filter(function (element) {
-    return element[1];
-  });
+  data = data.filter(function (element) { return element[1]; });
   data = sort(data);
   fillTbody(data, table.children[1]);
 }
@@ -38,10 +68,7 @@ function createTh(collection, thead) {
     ? thead.firstChild 
     : thead.appendChild(document.createElement('tr'));
   
-  
   tr.appendChild(createElement('th', collection.shift()));
-  
-  
   
   createTh(collection, thead);  
 }
@@ -96,3 +123,11 @@ var merge = function (left, right) {
   result = result.concat(left, right);
   return result;
 };
+
+function hasClass(element, className) {
+  return element.className && new RegExp('(^|\\s)' + className + '(\\s|$)').test(element.className);
+}
+
+function hasQuery(argStr, query) {
+  return new RegExp(query, 'i').test(argStr);
+}
