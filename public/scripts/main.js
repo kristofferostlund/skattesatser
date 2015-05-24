@@ -2,36 +2,6 @@ window.onload = function () {
   httpGet('/api/skattesatser', parseResponse);
 };
 
-function httpGetUnChaced(url, callback) {
-  url +=
-    (url.indexOf('?') ? '?' : '&')
-    + (10000 * Math.random());
-    
-    httpGet(url, callback);
-}
-
-function httpGet(url, callback) {
-  var httpReq = new XMLHttpRequest();
-  httpReq.open('GET', url, true);
-  
-  httpReq.onload = function (e) {
-    if (httpReq.readyState === 4) {
-      if (httpReq.status === 200) {
-        if (callback === undefined || callback === null) { return };
-        callback(httpReq.responseText);
-      } else {
-        if (callback === undefined || callback === null) { return };
-        callback(httpReq.statusText);
-      }
-    }
-  };
-  httpReq.onerror = function (e) {
-    if (callback === undefined || callback === null) { return };
-        callback(httpReq.statusText);
-  };
-  httpReq.send(null);
-}
-
 function parseResponse(data) {
   var obj = JSON.parse(data);
   var raw = obj.data;
@@ -54,6 +24,10 @@ function drawObjects(data) {
     removeChildren(element);
   }
   createTh(data.shift(), table.children[0]);
+  data = data.filter(function (element) {
+    return element[1];
+  });
+  data = sort(data);
   fillTbody(data, table.children[1]);
 }
 
@@ -64,7 +38,10 @@ function createTh(collection, thead) {
     ? thead.firstChild 
     : thead.appendChild(document.createElement('tr'));
   
+  
   tr.appendChild(createElement('th', collection.shift()));
+  
+  
   
   createTh(collection, thead);  
 }
@@ -81,7 +58,6 @@ function createRow(collection, element) {
   if (collection === undefined || collection.length < 1) { return; }
   
   element.appendChild(createElement('td', collection.shift()));
-  
   createRow(collection, element);
 }
 
@@ -98,3 +74,25 @@ function createElement(tagName, innerHTML) {
   node.innerHTML = innerHTML;
   return node;
 }
+
+var sort = function (array) {
+  var len = array.length;
+  if (len < 2) { return array; }
+  
+  var pivot = Math.ceil(len/2);
+  return merge(sort(array.slice(0, pivot)), sort(array.slice(pivot)));
+};
+
+var merge = function (left, right) {
+  var result = [];
+  while ((left.length > 0) && (right.length > 0)) {
+    if (left[0][3] > right[0][3]) {
+      result.push(left.shift());
+    } else {
+      result.push(right.shift());
+    }
+  }
+  
+  result = result.concat(left, right);
+  return result;
+};
