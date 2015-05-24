@@ -1,4 +1,14 @@
-var url = 'http://www.skatteverket.se/download/18.d5e04db14b6fef2c864daf/1425041837699/Kommunala+skattesatser.csv';
+window.onload = function () {
+  httpGet('/api/skattesatser', parseResponse);
+};
+
+function httpGetUnChaced(url, callback) {
+  url +=
+    (url.indexOf('?') ? '?' : '&')
+    + (10000 * Math.random());
+    
+    httpGet(url, callback);
+}
 
 function httpGet(url, callback) {
   var httpReq = new XMLHttpRequest();
@@ -22,6 +32,69 @@ function httpGet(url, callback) {
   httpReq.send(null);
 }
 
-httpGet('/api/skattesatser', function (data) {
-  console.log(data);
-});
+function parseResponse(data) {
+  var obj = JSON.parse(data);
+  var raw = obj.data;
+    
+  var arr = raw.split(/\n/);
+  arr.shift();
+  arr = arr.map(function (element) {
+    return element.split(/[;]/);
+  });
+  drawObjects(arr);
+}
+
+function drawObjects(data) {
+  if (data === undefined || data.length < 1) return;
+  
+  var table = document.getElementById('mainTable');
+  
+  for (var i = 0; i < table.children.length; i++) {
+    var element = table.children[i];
+    removeChildren(element);
+  }
+  createTh(data.shift(), table.children[0]);
+  fillTbody(data, table.children[1]);
+}
+
+function createTh(collection, thead) {
+  if (collection === undefined || collection.length < 1) { return; };
+  
+  var tr = thead.firstChild
+    ? thead.firstChild 
+    : thead.appendChild(document.createElement('tr'));
+  
+  tr.appendChild(createElement('th', collection.shift()));
+  
+  createTh(collection, thead);  
+}
+
+function fillTbody(collection, element) {
+  if (collection === undefined || collection.length < 1) { return; }
+  
+  createRow(collection.shift(), element.insertRow());
+  
+  fillTbody(collection, element);
+}
+
+function createRow(collection, element) {
+  if (collection === undefined || collection.length < 1) { return; }
+  
+  element.appendChild(createElement('td', collection.shift()));
+  
+  createRow(collection, element);
+}
+
+// ---- Helper methods ----
+
+function removeChildren(element) {
+  if (!element.hasChildNodes()) return element;
+  
+  element.removeChild(element.lastChild);
+  removeChildren(element);
+}
+function createElement(tagName, innerHTML) {
+  var node = document.createElement(tagName);
+  node.innerHTML = innerHTML;
+  return node;
+}
