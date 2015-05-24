@@ -1,0 +1,121 @@
+/*
+Colors:
+  Dark primary color: #388E3C;
+  Primary color: #4CAF50;
+  Light primary color: #C8E6C9;
+  Text/Icons: #FFFFFF;
+  Accent color: #9E9E9E;
+  Primary text: #212121;
+  Secondary text: #727272;
+  Divider color: #B6B6B6;
+*/
+
+::-webkit-input-placeholder { color: #FFFFFF; }
+:-moz-placeholder { color: #FFFFFF; }
+::-moz-placeholder { color: #FFFFFF; }
+:-ms-input-placeholder { color: #FFFFFF; }
+
+@font-face {
+  font-family: "Raleway";
+  src: url(./raleway/Raleway-Medium.ttf);
+}
+
+body {
+  font-family: "Raleway", "Helvetica Neue", Helvetica, serif;
+  background-color: #FFFFFF;
+  color: #212121;
+  line-height: 150%;
+}
+* {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+*:focus {
+    outline: 0;
+}
+h1, h2, h3 {
+  font-size: 300%;
+  font-weight: bold;
+  padding: 2rem 0;
+  text-align: left;
+  line-height: 100%;
+}
+
+h1 {
+  text-decoration: underline;
+}
+
+h2 {
+  font-size: 200%;
+}
+
+p {
+  padding: 0.5rem 0;
+}
+
+ul, ol {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  padding-left: 2rem;
+}
+ol {
+  list-style: lower-alpha;
+}
+li {
+  padding: 0.5rem 0;
+}
+
+em {
+  font-style: italic;
+}
+b {
+  font-weight: bold;
+}
+a, a:visited {
+  color: #212121;
+}
+a:hover {
+  background-color: #4CAF50;
+}
+
+hr {
+  border: thin none;
+  border-bottom: 1px solid #B6B6B6;
+}
+
+header {
+  width: 90%;
+  margin: 0 auto;
+}
+
+header > h1 {
+  width: 100%;
+  text-align: center;
+}
+
+input {
+  background-color: transparent;
+  border: thin none;
+  margin: thin none;
+  
+  border-bottom: 1px solid #B6B6B6;
+  width: 100%;
+  font-size: 200%;
+  padding: 1rem;
+} 
+
+/* ---- Classes ---- */
+
+.hero-search {
+  width: 100%;
+  background: #4CAF50;
+  padding: 2rem;
+}
+
+.hero-search input {
+  color: #FFFFFF;
+  
+  border-bottom: 1px solid #FFFFFF;
+}

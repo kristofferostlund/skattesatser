@@ -1,0 +1,20 @@
+{
+  "name": "skattesatser",
+  "version": "1.0.0",
+  "description": "Small app for Swedish people to check what their tax percantage is",
+  "main": "server/app.js",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:kristofferostlund/skattesatser.git"
+  },
+  "author": "Kristoffer Östlund",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kristofferostlund/skattesatser/issues"
+  },
+  "homepage": "https://github.com/kristofferostlund/skattesatser",
+  "dependencies": {
+    "express": "^4.12.4"
+  },
+  "devDependencies": {}
+}
