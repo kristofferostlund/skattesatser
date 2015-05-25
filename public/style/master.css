@@ -1,14 +1,14 @@
-/*
-Colors:
-  Dark primary color: #388E3C;
-  Primary color: #4CAF50;
-  Light primary color: #C8E6C9;
-  Text/Icons: #FFFFFF;
-  Accent color: #9E9E9E;
-  Primary text: #212121;
-  Secondary text: #727272;
-  Divider color: #B6B6B6;
-*/
+
+Colors {
+  color: #388E3C; /* Dark primary color */
+  color: #4CAF50; /* Primary color */
+  color: #C8E6C9; /* Light primary color */
+  color: #FFFFFF; /* Text/Icons */
+  color: #9E9E9E; /* Accent color */
+  color: #212121; /* Primary text */ 
+  color: #727272; /* Secondary text */
+  color: #B6B6B6; /* Divider color */
+}
 
 ::-webkit-input-placeholder { color: #FFFFFF; }
 :-moz-placeholder { color: #FFFFFF; }
@@ -58,13 +58,21 @@ ul, ol {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
-  padding-left: 2rem;
 }
 ol {
   list-style: lower-alpha;
 }
 li {
-  padding: 0.5rem 0;
+  position: relative;
+  padding: 0.5rem 2rem;
+  background-color: #C8E6C9;
+  margin: 0.5rem 0;
+  -webkit-box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+  -moz-box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+  box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+}
+li:hover {
+  background-color: #4CAF50;
 }
 
 em {
@@ -88,6 +96,9 @@ hr {
 header {
   width: 90%;
   margin: 0 auto;
+  -webkit-box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+  -moz-box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
 }
 
 header > h1 {
@@ -106,39 +117,13 @@ input {
   padding: 1rem;
 }
 article {
-  padding: 1rem;
-  margin: 2rem;
-  border-top: #B6B6B6 solid thin;
+  padding: 2rem;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
 
-article:first-of-type {
-  border-top: thin none;
-}
 
-table {
-  width: 100%;
-
-  text-align: center;
-  -webkit-box-sizing: border-box;
- -moz-box-sizing: border-box;
- box-sizing: border-box;
-}
-th {
-  font-weight: lighter;
-  font-size: 150%;
-  padding: 0.5rem;
-}
-
-td {
-  padding: 0.5rem;
-}
-
-tbody tr:nth-child(2n+1) {
-  background-color: #B6B6B6;
-}
 
 /* ---- Classes ---- */
 
@@ -156,4 +141,26 @@ tbody tr:nth-child(2n+1) {
   color: #FFFFFF;
   
   border-bottom: 1px solid #FFFFFF;
+}
+
+.county, .number {
+  font-size: 150%;
+  text-transform: capitalize;
+  padding: 0.5rem 0;
+}
+.organization {
+  padding: 0.5rem 0;
+}
+.number {
+  position: absolute;
+  right: 2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #388E3C;
+  color: #FFFFFF;
+  font-weight: bold;
+  padding: 1rem;
+  -webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  -moz-box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
 }

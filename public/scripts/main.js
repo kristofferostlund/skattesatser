@@ -1,33 +1,36 @@
 function OnInput(event) {
-  filterTable(event.target.value);
+  filterList(event.target.value);
 }
 
 function OnPropChanged(event) {
   if (event.propertyName.toLowerCase () == "value") {
-    filterTable(event.srcElement.value);
+    filterList(event.srcElement.value);
   }
 }
 
-function filterTable(query) {
-  var tbody = document.getElementById('mainTable').children[1];
-    
-  for (var i = 0; i < tbody.children.length; i++) {
-    var element = tbody.children[i];
-    if (!hasQuery(mapChildElements(element).join(' '), query)) {
-      element.style.display = 'none';
+function filterList(query) {
+  var elements = document.getElementsByClassName('county');
+  
+  mapChildren(elements, function (element) {
+    if (hasQuery(mapChildElementsInnerHtml(element.parentElement), query)) {
+      element.parentElement.style.display = '';
     } else {
-      element.style.display = '';
+      element.parentElement.style.display = 'none';
     }
-  }
+    
+  });
 }
 
-function mapChildElements(element, mappedArr) {
-  if (mappedArr === undefined) { mappedArr = []; }
-  if (mappedArr.length === element.children.length) { return mappedArr; }
+function mapChildren(elements, callback, mappedArray) {
+  if (mappedArray === undefined) { mappedArray = []; }
+  var i = mappedArray.length;
+  if (elements.length === i) { return mappedArray; }
   
-  mappedArr.push(element.children[mappedArr.length].innerHTML);
+  mappedArray.push(elements[i]);
   
-  return mapChildElements(element, mappedArr);
+  if (callback !== undefined) { callback(mappedArray[i]); }
+  
+  return mapChildren(elements, callback, mappedArray);
 }
 
 window.onload = function () {
@@ -47,45 +50,36 @@ function parseResponse(data) {
 }
 
 function drawObjects(data) {
+  var titles;
   if (data === undefined || data.length < 1) return;
   
-  var table = document.getElementById('mainTable');
+  var ul = document.getElementById('list-container');
   
-  for (var i = 0; i < table.children.length; i++) {
-    var element = table.children[i];
-    removeChildren(element);
-  }
-  createTh(data.shift(), table.children[0]);
-  data = data.filter(function (element) { return element[1]; });
+  titles = data.shift();
+  
+  data = data.filter(function (element) { return element[1]; }); // Removes unwanted elements.
+  data = data.map(function (element) { return element.map(function (x) { return x.toLowerCase(); }); });
   data = sort(data);
-  fillTbody(data, table.children[1]);
+  
+  addListEntries(data, titles, ul);
+  console.log(ul.children.length);
 }
 
-function createTh(collection, thead) {
-  if (collection === undefined || collection.length < 1) { return; };
+function addListEntries(collection, titles, element) {
+  var i = element.children.length;
   
-  var tr = thead.firstChild
-    ? thead.firstChild 
-    : thead.appendChild(document.createElement('tr'));
+  if (collection === undefined || collection.length === i) { return; }
+   
+  element.appendChild(createListEntry(collection[i], titles));
   
-  tr.appendChild(createElement('th', collection.shift()));
-  
-  createTh(collection, thead);  
+  addListEntries(collection, titles,  element);
 }
 
-function fillTbody(collection, element) {
-  if (collection === undefined || collection.length < 1) { return; }
-  
-  createRow(collection.shift(), element.insertRow());
-  
-  fillTbody(collection, element);
-}
-
-function createRow(collection, element) {
-  if (collection === undefined || collection.length < 1) { return; }
-  
-  element.appendChild(createElement('td', collection.shift()));
-  createRow(collection, element);
+function createListEntry(collection, titles) {
+  return createElement('li'
+    , createElement('div', collection[1], 'county').outerHTML
+    + createElement('div', collection[2], 'organization').outerHTML
+    + createElement('div', collection[3], 'number').outerHTML);
 }
 
 // ---- Helper methods ----
@@ -96,9 +90,10 @@ function removeChildren(element) {
   element.removeChild(element.lastChild);
   removeChildren(element);
 }
-function createElement(tagName, innerHTML) {
+function createElement(tagName, innerHTML, className) {
   var node = document.createElement(tagName);
-  node.innerHTML = innerHTML;
+  node.insertAdjacentHTML('afterbegin', innerHTML);
+  node.className = className;
   return node;
 }
 
@@ -129,5 +124,15 @@ function hasClass(element, className) {
 }
 
 function hasQuery(argStr, query) {
+  if (/[.]/.test(query)) { query = query.replace(/[.]/, '[.]'); }
   return new RegExp(query, 'i').test(argStr);
+}
+
+function mapChildElementsInnerHtml(element, mappedArr) {
+  if (mappedArr === undefined) { mappedArr = []; }
+  if (mappedArr.length === element.children.length) { return mappedArr; }
+  
+  mappedArr.push(element.children[mappedArr.length].innerHTML);
+  
+  return mapChildElementsInnerHtml(element, mappedArr);
 }

@@ -9,15 +9,14 @@
   <body>
     <header class="hero-search">
       <input type="text"
-      placeholder="Sök i tabellen"
+      placeholder="Sökord"
       oninput="OnInput(event)"
       onpropertychange="OnPropChanged(event)">
     </header>
     <article>
-      <table id="mainTable">
-        <thead></thead>
-        <tbody></tbody>
-      </table>
+      <div>
+        <ul id="list-container"></ul>
+      </div>
     </article>
   </body>
   <script src="scripts/http.js"></script>
