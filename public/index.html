@@ -5,6 +5,7 @@
     <title>Svenska skattesatser</title>
     <link rel="stylesheet" href="style/reset.min.css">
     <link rel="stylesheet" href="style/master.css">
+     <link rel="stylesheet" href="bower_components/material-design-icons/sprites/svg-sprite/svg-sprite-av.css">
   </head>
   <body>
     <header class="hero-search">
@@ -13,9 +14,17 @@
       oninput="OnInput(event)"
       onpropertychange="OnPropChanged(event)">
     </header>
-    <article>
+    <article id="list-content-container">
       <div>
         <ul id="list-container"></ul>
+      </div>
+    </article>
+    <article id="info-box">
+      <div class="info-box-container">
+        <div class="info-box-header" id="info-box-header">Info</div>
+        <table class="info-box-table">
+          <tbody id="info-box-tbody" class="inf-box-tbody"></tbody>
+        </table>
       </div>
     </article>
   </body>
