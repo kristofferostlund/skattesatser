@@ -1,4 +1,4 @@
-function httpGetUnChaced(url, callback) {
+function httpGetUnChached(url, callback) {
   url +=
     (url.indexOf('?') ? '?' : '&')
     + (10000 * Math.random());
@@ -8,7 +8,6 @@ function httpGetUnChaced(url, callback) {
 
 function httpGet(url, callback) {
   var httpReq = new XMLHttpRequest();
-  httpReq.open('GET', url, true);
   
   httpReq.onload = function (e) {
     if (httpReq.readyState === 4) {
@@ -22,8 +21,10 @@ function httpGet(url, callback) {
     }
   };
   httpReq.onerror = function (e) {
-    if (callback === undefined || callback === null) { return };
-        callback(httpReq.statusText);
+    if (callback !== undefined) { callback(httpReq.statusText); };
   };
+  
+  httpReq.open('GET', url, true);
   httpReq.send(null);
+  
 }

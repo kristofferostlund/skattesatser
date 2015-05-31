@@ -1,3 +1,13 @@
+// ---- Variables
+
+// Only used as to not have to get the same elements or data over and over again.
+var allItems
+  , hashedItems
+  , infoBox
+  , infoBoxWidth;
+
+// ---- Events ----
+
 function OnInput(event) {
   filterList(event.target.value);
 }
@@ -10,6 +20,13 @@ function OnPropChanged(event) {
 
 window.onresize = onresizeHandler;
 
+window.onload = function () {
+  console.time('download');
+  httpGet('/api/skattesatser', parseResponse);
+};
+
+// ---- Modify data ----
+
 function filterList(query) {
   var elements = document.getElementsByClassName('county');
   
@@ -21,31 +38,11 @@ function filterList(query) {
       element.parentElement.style.display = 'none';
     }
   });
-  
 }
-
-function mapChildren(elements, callback, mappedArray) {
-  if (mappedArray === undefined) { mappedArray = []; }
-  var i = mappedArray.length;
-  if (elements.length === i) { return mappedArray; }
-  
-  mappedArray.push(elements[i]);
-  
-  if (callback !== undefined) { callback(mappedArray[i]); }
-  
-  return mapChildren(elements, callback, mappedArray);
-}
-
-window.onload = function () {
-  httpGet('/api/skattesatser', parseResponse);
-};
-
-var allItems
-  , hashedItems
-  , infoBox
-  , infoBoxWidth;
 
 function parseResponse(data) {
+  console.timeEnd('download');
+  console.time('build');
   var obj = JSON.parse(data);
   var raw = obj.data;
     
@@ -59,7 +56,29 @@ function parseResponse(data) {
   hashedItems = arrToHash(allItems);
   
   drawObjects(arr);
+  console.timeEnd('build');
 }
+
+// ---- Event handlers ----
+
+function pointerEventHandler(event) {
+  var el = getElementByClassFromParents(event, 'location-container')
+    , key = getChildByClass(el, 'hidden').innerHTML
+    , items = hashedItems[key];
+    
+  positionOrHideInfoBox(el.offsetTop + el.clientHeight, el.offsetLeft, el.clientWidth);
+  
+  insertInfoItems([key].concat(items), 'info-box-tbody');
+}
+
+function onresizeHandler(event) {
+  if (infoBox === undefined) { infoBox = document.getElementById('info-box'); }
+  var listContainer = document.getElementById('list-container');
+  
+  infoBox.style.width = listContainer.clientWidth + 'px';
+}
+
+// ---- Render elements ----
 
 function drawInfoBox(titles, id, table) {
   if (titles === undefined || titles.length < 1) { return; }
@@ -126,16 +145,6 @@ function createListEntry(collection) {
   return li;
 }
 
-function pointerEventHandler(event) {
-  var el = getElementByClassFromPath(event, 'location-container')
-    , key = getChildByClass(el, 'hidden').innerHTML
-    , items = hashedItems[key];
-    
-  positionOrHideInfoBox(el.offsetTop + el.clientHeight, el.offsetLeft, el.clientWidth);
-  
-  insertInfoItems([key].concat(items), 'info-box-tbody');
-}
-
 function positionOrHideInfoBox(top, left, width) {
   if (infoBox === undefined) { infoBox = document.getElementById('info-box'); }
   
@@ -153,112 +162,4 @@ function positionOrHideInfoBox(top, left, width) {
 function hideInfoBox() {
   if (infoBox === undefined) { infoBox = document.getElementById('info-box'); }
   infoBox.style.display = 'none';
-}
-
-function onresizeHandler(event) {
-  if (infoBox === undefined) { infoBox = document.getElementById('info-box'); }
-  var listContainer = document.getElementById('list-container');
-  
-  infoBox.style.width = listContainer.clientWidth + 'px';
-}
-
-// ---- Helper methods ----
-
-
-function arrToHash(arr, hash, keys) {
-  if (hash === undefined) { hash = {}; }
-  if (keys === undefined) { keys = []; }
-  
-  var i = keys.length;
-  if (arr.length === i) { return hash; }
-  
-  keys.unshift(arr[i][0]);
-  
-  hash[keys[0]] = arr[i].filter(function (e) { return e !== keys[0]; });
-  
-  return arrToHash(arr, hash, keys);
-}
-
-function removeChildren(element) {
-  if (!element.hasChildNodes()) return element;
-  
-  element.removeChild(element.lastChild);
-  removeChildren(element);
-}
-function createElement(tagName, innerHTML, className) {
-  var node = document.createElement(tagName);
-  node.insertAdjacentHTML('afterbegin', innerHTML);
-  if (className) { node.className = className; }
-  return node;
-}
-
-var sort = function (array) {
-  var len = array.length;
-  if (len < 2) { return array; }
-  
-  var pivot = Math.ceil(len/2);
-  return merge(sort(array.slice(0, pivot)), sort(array.slice(pivot)));
-};
-
-var merge = function (left, right) {
-  var result = [];
-  while ((left.length > 0) && (right.length > 0)) {
-    if (left[0][3] > right[0][3]) {
-      result.push(left.shift());
-    } else {
-      result.push(right.shift());
-    }
-  }
-  
-  result = result.concat(left, right);
-  return result;
-};
-
-function hasClass(element, className) {
-  return element.className && new RegExp('(^|\\s)' + className + '(\\s|$)').test(element.className);
-}
-
-function hasQuery(argStr, query) {
-  if (/[.]/.test(query)) { query = query.replace(/[.]/, '[.]'); }
-  return new RegExp(query, 'i').test(argStr);
-}
-
-function mapChildElementsInnerHtml(element, mappedArr) {
-  if (mappedArr === undefined) { mappedArr = []; }
-  if (mappedArr.length === element.children.length) { return mappedArr; }
-  
-  mappedArr.push(element.children[mappedArr.length].innerHTML);
-  
-  return mapChildElementsInnerHtml(element, mappedArr);
-}
-
-function mapElements(elements, mappedElements) {
-  if (mappedElements === undefined) { mappedElements = []; }
-  if (mappedElements.length === elements.length) { return mappedElements; }
-  
-  mappedElements.push(elements[mappedElements.length]);
-  
-  return mapElements(elements, mappedElements);
-}
-
-function getElementByClassFromPath(event, className, tempPath) {
-  if (tempPath === undefined) { tempPath = []; }
-  
-  if (tempPath.length > 0 && hasClass(tempPath[0], className)) { return tempPath[0]; }
-  if (tempPath.length === event.path.length) { return undefined; }
-  
-  tempPath.unshift(event.path[tempPath.length]);
-  
-  return getElementByClassFromPath(event, className, tempPath);
-}
-
-function getChildByClass(parent, className, tempChildren) {
-  if (tempChildren === undefined) { tempChildren = []; }
-  
-  if (tempChildren.length > 0 && hasClass(tempChildren[0], className)) { return tempChildren[0]; }
-  if (tempChildren.length === parent.children.length) { return undefined; }
-  
-  tempChildren.unshift(parent.children[tempChildren.length]);
-  
-  return getChildByClass(parent, className, tempChildren);
 }
