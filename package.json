@@ -17,5 +17,16 @@
     "iconv-lite": "^0.4.9",
     "request": "^2.55.0"
   },
-  "devDependencies": {}
+  "devDependencies": {},
+  "homepage": "https://github.com/kristofferostlund/skattesatser",
+  "scripts": {
+    "test": "test"
+  },
+  "keywords": [
+    "taxes",
+    "tax",
+    "swedish",
+    "skatter",
+    "skatt"
+  ]
 }
