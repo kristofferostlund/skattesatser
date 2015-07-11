@@ -8,7 +8,7 @@
     "url": "git@github.com:kristofferostlund/skattesatser.git"
   },
   "author": "Kristoffer Östlund",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/kristofferostlund/skattesatser/issues"
   },
