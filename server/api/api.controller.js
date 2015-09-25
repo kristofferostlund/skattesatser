@@ -48,18 +48,24 @@ function parseCsv(content) {
     // First item to me is unwanted.
     dataArr.shift();
     
+    console.log();
+
     // Set the keys to the first item of dataArr, 
-    // and remove it from the array.
-    var keys = dataArr.shift();
+    // and remove it from the array. 
+    var keys = dataArr.shift().split(';');
+    // console.log(keys);
     var dataArrObj = [];
-    
+
     _.map(dataArr, function (row) {
       var obj = {};
+      var sRow = row.split(';');
       _.map(keys, function (key, i) {
-        obj[key] = row[i];
-      })
-      dataArrObj.push(obj);
-    })
+        obj[key] = sRow[i];
+        // if (!!sRow[i]) { obj[key] = sRow[i]; }
+      });
+            
+      if (!_.isEqual({}, obj)) { dataArrObj.push(obj); }
+    });
     
     resolve(dataArrObj);
   });
