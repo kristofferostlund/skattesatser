@@ -13,11 +13,19 @@
     "url": "https://github.com/kristofferostlund/skattesatser/issues"
   },
   "dependencies": {
+    "bluebird": "^2.10.1",
     "express": "^4.12.4",
     "iconv-lite": "^0.4.9",
+    "lodash": "^3.10.1",
     "request": "^2.55.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-livereload": "^3.8.0",
+    "gulp-nodemon": "^2.0.4",
+    "gulp-open": "^1.0.0",
+    "gulp-util": "^3.0.6"
+  },
   "homepage": "https://github.com/kristofferostlund/skattesatser",
   "scripts": {
     "test": "test"

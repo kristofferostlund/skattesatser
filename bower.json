@@ -1,0 +1,24 @@
+{
+  "name": "skattesatser",
+  "version": "0.0.0",
+  "homepage": "https://github.com/kristofferostlund/skattesatser",
+  "authors": [
+    "Kristoffer Ostlund <kristoffer.ostlund@gmail.com>"
+  ],
+  "description": "A web site to find the taxes for counties in Sweden",
+  "main": "server/app.js",
+  "moduleType": [
+    "node"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "lodash": "~3.10.1"
+  }
+}
