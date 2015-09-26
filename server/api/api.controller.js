@@ -9,7 +9,7 @@ exports.skattesatser = function (req, res) {
   getSkattetabell()
     .then(parseCsv)
     .then(function (data) {
-      res.status(200).json({ data: data });
+      res.status(200).json(data);
     })
     .catch(function (err) {
       console.log(err);

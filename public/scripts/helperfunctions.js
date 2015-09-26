@@ -19,8 +19,6 @@ function arrToHash(arr, hash, keys) {
   
   keys.unshift(arr[i][0]);
   
-  hash[keys[0]] = arr[i].filter(function (e) { return e !== keys[0]; });
-  
   return arrToHash(arr, hash, keys);
 }
 

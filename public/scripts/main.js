@@ -4,7 +4,8 @@
 var allItems
   , hashedItems
   , infoBox
-  , infoBoxWidth;
+  , infoBoxWidth
+  , keys;
 
 // ---- Events ----
 
@@ -43,19 +44,20 @@ function filterList(query) {
 function parseResponse(data) {
   console.timeEnd('download');
   console.time('build');
-  var obj = JSON.parse(data);
-  var raw = obj.data;
-    
-  var arr = raw.split(/\n/);
-  arr.shift(); // Remove first item which is unwanted
-  arr = arr.map(function (element) { return element.toLowerCase().split(/[;]/); });
+  var arr = JSON.parse(data);
   
-  drawInfoBox(arr.shift(), 'info-box-tbody');
+  keys = _.map(arr[0], function (val, key) { return key; });
   
-  allItems = arr.map(function (element) { return element; }); // Copy array without binding them together
-  hashedItems = arrToHash(allItems);
+  hashedItems = {};
+  _.map(arr, function (item) {
+    var k = item[keys[0]];
+    hashedItems[k] = item; 
+  });
   
-  drawObjects(arr);
+  
+  drawInfoBox(keys, 'info-box-tbody');
+  
+  drawObjects(arr, keys);
   console.timeEnd('build');
 }
 
@@ -81,67 +83,70 @@ function onresizeHandler(event) {
 // ---- Render elements ----
 
 function drawInfoBox(titles, id, table) {
-  if (titles === undefined || titles.length < 1) { return; }
+  if (titles === undefined || titles.length) { return; }
   if (table === undefined) { table = document.getElementById(id); }
   
-  table.appendChild(createElement('tr',
-  createElement('td', titles.shift(), 'info-box-td').outerHTML,
-  'info-box-tr'));
-  
-  return drawInfoBox(titles, id, table); 
+  _.map(titles, function (title) {
+    table.appendChild(createElement(
+      'tr'
+      , createElement('td', title, 'info-box-td').outerHTML
+      , 'info-box-tr'));
+  });
 }
 
-function insertInfoItems(items, id, table) {
-  if (items === undefined || items.length < 1) { return; }
-  if (table === undefined) { table = document.getElementById(id); }
+function insertInfoItems(items, id) {
+  // if (items === undefined || items.length < 1) { return; }
+  // if (table === undefined) { table = document.getElementById(id); }
   
-  var i = table.children.length - items.length;
+  // var i = table.children.length - items.length;
   
-  insertOrUpdate(table.children[i], 1, 'td', items.shift(), 'info-box-td');
   
-  return insertInfoItems(items, id, table);
+  var table = document.getElementById(id);
+  
+  _.map(items, function (item, i) {
+    insertOrUpdate(table, 1, 'td', item, 'info-box-td');
+  });
+  
+  // insertOrUpdate(table.children[i], 1, 'td', items.shift(), 'info-box-td');
 }
 
 function insertOrUpdate(parent, childPos, tag, content, className) {
-  if (parent.children[childPos] === undefined) {
-    parent.appendChild(createElement(tag, content, className));
-  } else {
-    parent.children[childPos].innerHTML = content;
-  }
+  
+  _.map(keys, function (key, i) {
+    if (parent.children[childPos + i] === undefined) {
+      parent.appendChild(createElement(tag, content[key], className));
+    } else {
+      parent.children[childPos + i].innerHTML = content[key];
+    }
+  });
 }
 
-function drawObjects(data) {
+function drawObjects(data, keys) {
   if (data === undefined || data.length < 1) return;
   
   var ul = document.getElementById('list-container');
   
-  data = data.filter(function (element) { return element[1]; }); // Removes unwanted elements.
-  data = data.map(function (element) { return element.map(function (x) { return x.toLowerCase(); }); });
-  data = sort(data);
+  // data = sort(data);
   
-  addListEntries(data, ul);
+  addListEntries(data, keys, ul);
 }
 
-function addListEntries(collection, element) {
-  var i = element.children.length;
-  
-  if (collection === undefined || collection.length === i) { return; }
-   
-  element.appendChild(createListEntry(collection[i]));
-  
-  addListEntries(collection, element);
+function addListEntries(collection, keys, element) {
+  _.map(collection, function (item, i) {
+    element.appendChild(createListEntry(item, keys));
+  });
 }
 
-function createListEntry(collection) {
-  var li = createElement('li'
-  , createElement('div', collection[1], 'county').outerHTML
-  + createElement('div', collection[2], 'organization').outerHTML
-  + createElement('div', collection[3], 'number').outerHTML
-  + createElement('div', collection[0], 'hidden').outerHTML
-  , 'location-container');
+function createListEntry(collection, keys) {
   
+  var classes = ['hidden', 'county', 'organization', 'number'];
+  
+  var innerHtml = _.map(keys, function (key, i) {
+    return createElement('div', collection[key], classes[i]).outerHTML
+  }).join('');
+  
+  var li = createElement('li', innerHtml, 'location-container');
   li.addEventListener('click', pointerEventHandler, false);
-  
   return li;
 }
 
